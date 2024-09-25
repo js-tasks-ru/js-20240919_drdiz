@@ -6,12 +6,12 @@
  */
 
 export const omit = (obj, ...fields) => {
-    const arr = [...fields],
-    objWith = {},
-    objWithout = {};    
-    arr.forEach((item) => {(obj.hasOwnProperty(`${item}`)) ? objWith[item] = obj[item] : false });    
-    for (let key in obj) {
-        !(objWith.hasOwnProperty(`${key}`)) ? objWithout[key] = obj[key] : false;
-    }
-    return objWithout
+    const objNew = new Object();
+    const keys = Object.keys(obj);
+    for (const key of keys) {
+        if (fields.indexOf(key) == -1) {
+            objNew[key] = obj[key]
+        }
+    }   
+    return objNew
 };
