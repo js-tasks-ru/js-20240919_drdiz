@@ -9,5 +9,5 @@ export function sortStrings(arr, param = 'asc') {
   const options = { caseFirst: 'upper' };
   const ascSort = ((a, b) => a.localeCompare(b, locales, options));
   const descSort = ((a, b) => b.localeCompare(a, locales, options));
-  return [...arr].sort(param === 'asc' ? ascSort : descSort)
+  return [...arr].sort(param === 'asc' ? ascSort : descSort);
 }
