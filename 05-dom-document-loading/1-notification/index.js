@@ -11,7 +11,7 @@ export default class NotificationMessage {
     this.text = text;
     this.duration = duration;
     this.type = type;
-    this.render();
+    this.createElement();
   }
 
   get createTemplate() {
@@ -30,27 +30,27 @@ export default class NotificationMessage {
 
   } 
 
-  render() {
+  createElement() {
     const div = document.createElement('div');
     div.innerHTML = this.createTemplate; 
     this.element = div.firstElementChild;     
   }
 
-  show(elementTarget) {     
+  show(elementTarget = document.body) {     
 
     if (NotificationMessage.activeNotification) {
         NotificationMessage.activeNotification.remove();
-      }
-       
-    if (!elementTarget) {
-        elementTarget = document.body
-    }
+      }       
+    
     elementTarget.append(this.element);    
-    setTimeout(() => this.remove(), this.duration);
+    this.timerId = setTimeout(() => this.remove(), this.duration);
     NotificationMessage.activeNotification = this;
   }
   
   remove() {
+    if (this.timerId) {
+      clearTimeout(this.timerId);
+    }
     this.element.remove();
   }
   destroy() {
