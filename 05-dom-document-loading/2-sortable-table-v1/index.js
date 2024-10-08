@@ -5,8 +5,7 @@ export default class SortableTable {
     this.headerConfig = headerConfig;
     this.data = data;
     this.render();
-    this.subElements = this.getSubElements();
-    this.sort()       
+    this.subElements = this.getSubElements();          
   }
 
 
@@ -22,7 +21,7 @@ export default class SortableTable {
   }
   get templateBodyTable() {
     return `    
-    <div data-element="body" class="sortable-table__body">
+    
       ${this.data.map((e) => `
         <a href="/products/${e.id}" class="sortable-table__row">
         <div class="sortable-table__cell">
@@ -34,21 +33,21 @@ export default class SortableTable {
         <div class="sortable-table__cell">${e.sales}</div>
       </a>
         `).join('')}
-    </div>`;
+    `;
   }
 
 
   render() {
     const elemHtmlCode = this.createElement(`<div data-element="productsContainer" class="products-list__container">
-  <div class="sortable-table">${this.templateHeaderTable}${this.templateBodyTable}</div></div>`);   
+  <div class="sortable-table">${this.templateHeaderTable}<div data-element="body" class="sortable-table__body">${this.templateBodyTable}</div></div></div>`).firstElementChild;   
     this.element = elemHtmlCode;
     this.subElements = this.getSubElements();    
   }
 
   createElement(html) {
     const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.firstElementChild;
+    div.innerHTML = html;    
+    return div;
   }
 
   getSubElements() {
@@ -77,7 +76,8 @@ export default class SortableTable {
 
     this.data = sortedData;
     this.subElements.body.innerHTML = ''   
-    this.subElements.body.append(this.createElement(this.templateBodyTable));      
+    this.subElements.body.append(...this.createElement(this.templateBodyTable).children);   
+         
   }
   remove() {
     this.element.remove();
