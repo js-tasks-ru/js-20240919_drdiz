@@ -78,8 +78,7 @@ export default class SortableTable {
     });
 
     this.subElements.body.innerHTML = '';
-    // this.subElements.body.append(...this.createElement(this.templateBodyTable).children);
-    this.subElements.body = this.templateBodyTable
+    this.subElements.body.append(...this.createElement(this.templateBodyTable).children);    
   }
 
   remove() {
