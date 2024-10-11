@@ -4,16 +4,16 @@ export default class SortableTable {
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
     this.data = data;
-    this.render();    
+    this.render();
     this.subElements = this.getSubElements();
 
   }
 
-  get templateHeaderTable() {
+  get templateHeaderTable() {    
     return `    
       <div data-element="header" class="sortable-table__header sortable-table__row">
         ${this.headerConfig.map((e) => `    
-            <div class="sortable-table__cell" data-id="${e.title}" data-sortable="${e.sortable}" data-order="">
+            <div class="sortable-table__cell" data-id="${e.id}" data-sortable="${e.sortable}" data-order="">
               <span>${e.title}</span>
             </div>      
           `).join('')}  
@@ -25,12 +25,13 @@ export default class SortableTable {
     ${this.data.map((itemData) =>
     `<a href="/products/${itemData.id}" class="sortable-table__row">
       ${this.headerConfig.map((elemHeader) => {
-    if (elemHeader['template']) {
+    
+      if (elemHeader['template']) {
       return elemHeader['template'](itemData[elemHeader['id']]);
-    }
+    } else { 
 
     return `<div class="sortable-table__cell">${itemData[elemHeader['id']]}</div>`;
-  }).join('')
+  }}).join('')
 }
       </a>`).join('')
 }`;
@@ -46,7 +47,7 @@ export default class SortableTable {
         </div>
       </div>`).firstElementChild;
     this.element = elemHtmlCode;
-    this.subElements = this.getSubElements();    
+    this.subElements = this.getSubElements();
   }
 
   createElement(html) {
