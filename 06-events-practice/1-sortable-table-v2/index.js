@@ -7,22 +7,20 @@ export default class SortableTableV2 extends SortableTable {
     data = [],
     sorted = {},
     isSortLocally = true,
-  } = {}) {    
+  } = {}) {
     super(headersConfig, data);
     this.sorted = sorted;
     this.isSortLocally = isSortLocally;
     this.sort(this.sorted.id, this.sorted.order);
-    this.addEvListeners(); 
-    this.initDefaultArrowSort()   
-  }
-  
-
-  initDefaultArrowSort(){
-    this.subElements.header.querySelector('[data-id="title"]').dataset.order = this.sorted.order
-    this.subElements.header.querySelector('[data-id="title"]').append(this.createArrow);
+    this.addEvListeners();
+    this.arrowElement = this.createArrow();
+    this.initDefaultArrowSort();
   }
 
-
+  initDefaultArrowSort() {
+    this.subElements.header.querySelector('[data-id="title"]').dataset.order = this.sorted.order;
+    this.subElements.header.querySelector('[data-id="title"]').append(this.arrowElement);
+  }
 
   addEvListeners() {
     this.element.addEventListener('pointerdown', this.onClickHeadSort);
@@ -35,38 +33,21 @@ export default class SortableTableV2 extends SortableTable {
   onClickHeadSort = (e) => {
 
     const target = e.target.closest('.sortable-table__cell');
-
     if (!target) {
       return;
     }
 
-    if (!this.subElements.header.contains(target)) {
-      return;
-    }
-
-
-
-
-    if (target.dataset.order == '' || target.dataset.order == 'desc') {
-      target.dataset.order = 'asc';
-    } else {
-      target.dataset.order = 'desc';
-    }
-
-    const arrow = this.subElements.header.querySelector('.sortable-table__sort-arrow');
-    arrow ? arrow.remove() : false;
-    target.append(this.createArrow);
+    target.dataset.order = target.dataset.order == 'desc' ? 'asc' : 'desc';
+    target.append(this.arrowElement);
     this.sort(target.dataset.id, target.dataset.order);
-    
-
   }
 
-  get createArrow() {
+  createArrow() {
     let div = this.createElement('div');
     div.innerHTML = `<span data-element="arrow" class="sortable-table__sort-arrow">
         <span class="sort-arrow"></span>
       </span>`;
-    return div.lastElementChild
+    return div.lastElementChild;
   }
 
   destroy() {

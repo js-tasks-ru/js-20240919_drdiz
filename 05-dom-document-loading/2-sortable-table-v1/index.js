@@ -9,7 +9,7 @@ export default class SortableTable {
 
   }
 
-  get templateHeaderTable() {    
+  get templateHeaderTable() {
     return `    
       <div data-element="header" class="sortable-table__header sortable-table__row">
         ${this.headerConfig.map((e) => `    
@@ -25,17 +25,18 @@ export default class SortableTable {
     ${this.data.map((itemData) =>
     `<a href="/products/${itemData.id}" class="sortable-table__row">
       ${this.headerConfig.map((elemHeader) => {
-    
-      if (elemHeader['template']) {
-      return elemHeader['template'](itemData[elemHeader['id']]);
-    } else { 
 
-    return `<div class="sortable-table__cell">${itemData[elemHeader['id']]}</div>`;
-  }}).join('')
+    if (elemHeader['template']) {
+      return elemHeader['template'](itemData[elemHeader['id']]);
+    } else {
+      return `<div class="sortable-table__cell">${itemData[elemHeader['id']]}</div>`;
+    }
+  }).join('')
 }
       </a>`).join('')
 }`;
   }
+  
   render() {
     const elemHtmlCode = this.createElement(`
       <div data-element="productsContainer" class="products-list__container">
@@ -64,21 +65,21 @@ export default class SortableTable {
     }, {});
   }
 
-  sort(fieldValue, orderValue = 'asc') {
-    const sortOrder = orderValue === 'asc' ? 1 : -1;
+  sort(sortField, sortOrder = 'asc') {
+    const columnConfig = this.headerConfig.find(config => config.id === sortField);
+    const k = sortOrder === 'asc' ? 1 : -1;
 
-    this.data = [...this.data].sort((a, b) => {
-      if (typeof a[fieldValue] === 'number' && typeof b[fieldValue] === 'number') {
-        return sortOrder * (a[fieldValue] - b[fieldValue]);
-      }
+    const sortNumber = (a, b) => {
+      return k * (a[sortField] - b[sortField]);
+    };
 
-      if (typeof a[fieldValue] === 'string' && typeof b[fieldValue] === 'string') {
-        return sortOrder * a[fieldValue].localeCompare(b[fieldValue], ['ru', 'en'], { caseFirst: 'upper' });
-      }
-      return 0;
-    });
+    const sortString = (a, b) => {
+      return k * a[sortField].localeCompare(b[sortField], ['ru', 'en'], { caseFirst: 'upper' });
+    };
 
-    this.subElements.body.innerHTML = this.templateBodyTable;    
+    const sortFn = columnConfig.sortType === "number" ? sortNumber : sortString;
+    this.data = [...this.data].sort(sortFn);
+    this.subElements.body.innerHTML = this.templateBodyTable;
   }
 
   remove() {
