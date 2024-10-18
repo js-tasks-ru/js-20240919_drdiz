@@ -9,8 +9,7 @@ export default class ColumnChart extends ColumnChartV1 {
     super(props);
     const {
       url = '',
-    } = props;
-    this.today = new Date(Date.now());
+    } = props;    
     this.baseURL = url;
   }
 
