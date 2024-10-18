@@ -48,27 +48,35 @@ export default class ColumnChart {
     if (this.data.length) {
       this.element.classList.remove(`column-chart_loading`);
     }
-    this.elementsForUpdate = this.collectSubElements(this.element);
+    this.subElements = this.subElements(this.element);
   }
   createElement(html) {
     const div = document.createElement('div');
     div.innerHTML = html;
     return div.firstElementChild;
   }
-  collectSubElements(element) {
-    const elements = element.querySelectorAll('[data-element="body"]');
-    return [...elements].reduce((collect, el) => {
-      collect[el.dataset.element] = el;
-      return collect;
-    }, {});
+  subElements() {
+    const result = {};
+    const elements = this.element.querySelectorAll('[data-element]');
+
+    for (const subElement of elements) {
+      const name = subElement.dataset.element;
+      result[name] = subElement;
+    }
+
+    return result;
   }
-  update(data) {
-    this.elementsForUpdate.body.innerHTML = this.createTemplate(data);
+  update(newData) {
+    this.data = newData;
+    this.value = newData.reduce((a, b)=>a + b, 0);    
+    this.subElements.header.innerHTML = this.formatHeading(this.value);
+    this.subElements.body.innerHTML = this.createTemplate(this.data);
   }
+
   remove() {
     this.element.remove();
   }
   destroy() {
-    this.remove();      
+    this.remove();
   }
 }
