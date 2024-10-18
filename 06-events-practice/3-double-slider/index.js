@@ -82,7 +82,20 @@ export default class DoubleSlider {
             max: this.max,
             selected: this.selected
         };
-        return this.borderUpd[thumb](params);
+        console.log(thumb);
+        return (thumb == 'left') ? this.borderUpdleft(params) : this.borderUpdright(params);
+    }
+
+    borderUpdleft(data) {
+        const { value, min, selected } = data;
+        const tempValue = Math.min(value, selected.to);
+        return Math.max(tempValue, min);
+    }
+
+    borderUpdright(data) {
+        const { value, max, selected } = data;
+        const tempValue = Math.max(value, selected.from);
+        return Math.min(tempValue, max);
     }
 
     calculateThumbPosition(thumb, amount) {
@@ -105,24 +118,11 @@ export default class DoubleSlider {
         );
     }
 
-    borderUpd = {
-        left: (data) => {
-            const { value, min, selected } = data;
-            const tempValue = Math.min(value, selected.to);
-            return Math.max(tempValue, min);
-        },
-        right: (data) => {
-            const { value, max, selected } = data;
-            const tempValue = Math.max(value, selected.from);
-            return Math.min(tempValue, max);
-        },
-    };
-
     createValueTemplate(dataValue, value) {
         return `
         <span data-element="${dataValue}">${this.formatValue(value)}</span>
-        `
-       
+        `;
+
     }
 
     createScaleTemplate() {
@@ -132,7 +132,7 @@ export default class DoubleSlider {
        <span class="range-slider__progress" data-element="progress" style="left: ${left}%; right: ${right}%"></span>
        <span class="range-slider__thumb-left" data-element="left" style="left: ${left}%"></span>
        <span class="range-slider__thumb-right" data-element="right" style="right: ${right}%"></span>
-       `
+       `;
     }
 
     getSubElements(collectElement) {
