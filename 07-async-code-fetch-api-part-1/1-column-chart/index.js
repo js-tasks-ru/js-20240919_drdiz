@@ -11,19 +11,19 @@ export default class ColumnChart extends ColumnChartV1 {
       url = '',
     } = props;
     this.today = new Date(Date.now());
-    this.createURL(url);
+    this.baseURL = url;
   }
 
-  createURL(pathName) {
-    this.url = new URL(BACKEND_URL);
-    this.url.pathname = pathName;
+  createURL(from, to) {
+    const url = new URL(this.baseURL, BACKEND_URL);
+    url.searchParams.set('from', from);
+    url.searchParams.set('to', to);
+    return url;
   }
 
   async update(from, to) {
-    this.element.className = 'column-chart column-chart_loading';
-    this.url.searchParams.set('from', from);
-    this.url.searchParams.set('to', to);
-    const newData = await fetchJson(this.url);
+    this.element.className = 'column-chart column-chart_loading';    
+    const newData = await fetchJson(this.createURL(from, to));
     const dataValue = Object.values(newData);
     super.update(dataValue);
     if (dataValue.length > 0) {
